@@ -688,5 +688,133 @@ footer .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; justify-cont
 })();
 </script>
 
+<!-- ============ Popups parodiques (faciles à fermer) ============ -->
+<style>
+.pp-bar { background: var(--lemon); color: var(--on-accent); font: 600 0.88rem var(--font-body); display: flex; align-items: center; justify-content: center; gap: 12px; padding-block: 8px; padding-left: var(--gutter-l); padding-right: var(--gutter-r); text-align: center; }
+.pp-x { background: none; border: 0; color: inherit; font: 700 1.2rem/1 var(--font-body); cursor: pointer; padding: 4px 8px; border-radius: 6px; flex-shrink: 0; }
+.pp-x:hover { background: color-mix(in srgb, currentColor 14%, transparent); }
+.pp-backdrop { position: fixed; inset: 0; z-index: 50; background: rgba(5, 20, 40, 0.45); display: grid; place-items: center; padding: 16px; }
+.pp-modal { position: relative; background: var(--stone); color: var(--ink); border-radius: 10px; max-width: 420px; width: 100%; padding: 30px 26px 22px; display: grid; gap: 14px; box-shadow: 0 30px 60px -20px rgba(0, 20, 50, 0.45); text-align: center; animation: pp-in 0.25s ease-out; }
+.pp-modal .pp-x { position: absolute; top: 8px; right: 8px; color: var(--ink-soft); }
+.pp-modal h3 { font-size: 1.6rem; }
+.pp-modal p { color: var(--ink-soft); }
+.pp-big { font: 800 3rem/1 var(--font-display); color: var(--lemon); }
+.pp-btn { font: 700 1rem var(--font-body); background: var(--lemon); color: var(--on-accent); border: 0; border-radius: 999px; padding: 12px 20px; cursor: pointer; }
+.pp-btn.ghost { background: transparent; color: var(--heading); border: 1px solid var(--line); }
+.pp-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+.pp-kill { background: none; border: 0; color: var(--ink-soft); font: 400 0.82rem var(--font-body); text-decoration: underline; cursor: pointer; justify-self: center; }
+.pp-small { font-size: 0.75rem; color: var(--ink-soft); }
+.pp-cookie { position: fixed; z-index: 40; left: 0; right: 0; bottom: 0; background: var(--stone); border-top: 1px solid var(--line); box-shadow: 0 -10px 30px -18px rgba(0, 20, 50, 0.4); padding-block: 16px calc(16px + env(safe-area-inset-bottom, 0px)); padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
+.pp-cookie .in { max-width: 1120px; margin-inline: auto; display: flex; gap: 16px 24px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.pp-cookie p { max-width: 70ch; min-width: 0; font-size: 0.95rem; color: var(--ink-soft); }
+.pp-cookie b { color: var(--heading); }
+.pp-toast { position: fixed; z-index: 45; left: max(16px, env(safe-area-inset-left, 0px)); bottom: calc(16px + env(safe-area-inset-bottom, 0px)); max-width: min(340px, calc(100vw - 32px)); background: var(--stone); color: var(--ink); border: 1px solid var(--line); border-radius: 10px; padding: 12px 10px 12px 14px; display: flex; gap: 12px; align-items: flex-start; box-shadow: 0 16px 40px -18px rgba(0, 20, 50, 0.45); animation: pp-up 0.3s ease-out; font-size: 0.92rem; }
+.pp-toast .ic { width: 38px; height: 38px; border-radius: 50%; background: var(--sea); color: var(--sand); display: grid; place-items: center; font: 800 1rem var(--font-display); flex-shrink: 0; }
+.pp-toast .tx { min-width: 0; }
+.pp-toast .tx small { display: block; color: var(--ink-soft); font-size: 0.78rem; }
+.pp-toast .pp-x { color: var(--ink-soft); font-size: 1rem; }
+body.pp-has-cookie .pp-toast { bottom: calc(130px + env(safe-area-inset-bottom, 0px)); }
+.pp-stock { font: 700 0.85rem var(--font-body); color: var(--lemon); }
+@keyframes pp-in { from { transform: translateY(12px) scale(0.98); opacity: 0; } }
+@keyframes pp-up { from { transform: translateY(16px); opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .pp-modal, .pp-toast { animation: none; } }
+</style>
+<script>
+(function () {
+  var KEY = "bqp-popups-off";
+  function off() { try { return localStorage.getItem(KEY) === "1"; } catch (e) { return false; } }
+  if (off()) return;
+
+  var shown = {}, timers = [], modalOpen = false, modalQueue = [];
+  function later(fn, ms) { timers.push(setTimeout(fn, ms)); }
+  function el(html) { var d = document.createElement("div"); d.innerHTML = html.trim(); return d.firstChild; }
+  function killAll() {
+    try { localStorage.setItem(KEY, "1"); } catch (e) {}
+    timers.forEach(clearTimeout); timers = [];
+    document.querySelectorAll(".pp-bar, .pp-backdrop, .pp-cookie, .pp-toast").forEach(function (n) { n.remove(); });
+    document.body.classList.remove("pp-has-cookie");
+    modalOpen = false; modalQueue = [];
+    document.removeEventListener("mouseout", exitIntent);
+  }
+  var KILL = '<button class="pp-kill" type="button" data-kill>Ne plus afficher aucune popup</button>';
+
+  /* 1. Barre d'annonce */
+  var bar = el('<div class="pp-bar" role="region" aria-label="Annonce"><span>Livraison gratuite de votre banc en France via Mondial Relay* · <small>*banc trop large pour un point relais</small></span><button class="pp-x" type="button" aria-label="Fermer l\'annonce">×</button></div>');
+  bar.querySelector(".pp-x").onclick = function () { bar.remove(); };
+  document.body.insertBefore(bar, document.body.firstChild);
+
+  /* 2. Bandeau cookies */
+  var cookie = el('<div class="pp-cookie" role="dialog" aria-label="Cookies"><div class="in"><p><b>Ce site utilise des cookies.</b> Pas des traceurs : des navettes à la fleur d\'oranger, posées sur le banc n° 2. Les accepter n\'engage à rien, les refuser non plus.</p><div class="pp-row"><button class="pp-btn ghost" type="button" data-close>Tout refuser</button><button class="pp-btn" type="button" data-close>Tout accepter</button></div></div></div>');
+  later(function () { document.body.appendChild(cookie); document.body.classList.add("pp-has-cookie"); }, 900);
+  cookie.addEventListener("click", function (e) { if (e.target.closest("[data-close]")) { cookie.remove(); document.body.classList.remove("pp-has-cookie"); } });
+
+  /* 3. Modales, une seule à la fois */
+  var MODALS = {
+    newsletter: '<div class="pp-modal" role="dialog" aria-modal="true" aria-labelledby="pp-t1"><button class="pp-x" type="button" aria-label="Fermer" data-close>×</button><span class="eyebrow">Offre de bienvenue</span><div class="pp-big">-10 %</div><h3 id="pp-t1">sur votre premier banc qui parle</h3><p>Promotions, nouvelles anecdotes et soldes de pigeons. Directement sur votre banc.</p><button class="pp-btn" type="button" data-close>J\'en profite</button><span class="pp-small">Offre fictive. Le banc est déjà gratuit, il suffit de s\'asseoir.</span>' + KILL + '</div>',
+    stock: '<div class="pp-modal" role="dialog" aria-modal="true" aria-labelledby="pp-t2"><button class="pp-x" type="button" aria-label="Fermer" data-close>×</button><span class="eyebrow">Victime de son succès</span><h3 id="pp-t2">Plus que 5 bancs disponibles&nbsp;!</h3><p>12 personnes regardent ce banc en ce moment. Enfin, surtout des goélands.</p><span class="pp-stock">● Stock limité : 5 sur 5</span><div class="pp-row"><button class="pp-btn" type="button" data-close>Je réserve ma place assise</button></div>' + KILL + '</div>',
+    exit: '<div class="pp-modal" role="dialog" aria-modal="true" aria-labelledby="pp-t3"><button class="pp-x" type="button" aria-label="Fermer" data-close>×</button><span class="eyebrow">Attendez&nbsp;!</span><h3 id="pp-t3">Vous partez sans écouter l\'olivier millénaire&nbsp;?</h3><p>Il attend depuis plus de mille ans. Il peut attendre encore un peu, mais il serait vexé.</p><div class="pp-row"><button class="pp-btn ghost" type="button" data-close>Je pars quand même</button><button class="pp-btn" type="button" data-listen>Écouter l\'olivier</button></div>' + KILL + '</div>'
+  };
+  function openModal(name) {
+    if (shown[name] || off()) return;
+    if (modalOpen) { if (modalQueue.indexOf(name) < 0) modalQueue.push(name); return; }
+    shown[name] = true; modalOpen = true;
+    var prev = document.activeElement;
+    var bd = el('<div class="pp-backdrop">' + MODALS[name] + '</div>');
+    function close() {
+      bd.remove(); document.removeEventListener("keydown", onKey); modalOpen = false;
+      if (prev && prev.focus) prev.focus();
+      var next = modalQueue.shift(); if (next) later(function () { openModal(next); }, 6000);
+    }
+    function onKey(e) { if (e.key === "Escape") close(); }
+    bd.addEventListener("click", function (e) {
+      if (e.target === bd || e.target.closest("[data-close]")) close();
+      else if (e.target.closest("[data-kill]")) { document.removeEventListener("keydown", onKey); killAll(); }
+      else if (e.target.closest("[data-listen]")) {
+        close();
+        var b = document.querySelector('.place[data-i="3"]'); if (b) b.click();
+        var bench = document.getElementById("bench"); if (bench) bench.scrollIntoView({ block: "center" });
+      }
+    });
+    document.addEventListener("keydown", onKey);
+    document.body.appendChild(bd);
+    bd.querySelector(".pp-x").focus();
+  }
+  later(function () { openModal("newsletter"); }, 5000);
+
+  var budget = document.getElementById("budget");
+  if (budget && "IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (en) {
+      if (en[0].isIntersecting) { io.disconnect(); later(function () { openModal("stock"); }, 800); }
+    }, { threshold: 0.4 });
+    io.observe(budget);
+  }
+  function exitIntent(e) {
+    if (!e.relatedTarget && e.clientY <= 0) { document.removeEventListener("mouseout", exitIntent); openModal("exit"); }
+  }
+  later(function () { document.addEventListener("mouseout", exitIntent); }, 12000);
+
+  /* 4. Preuve sociale */
+  var PROOF = [
+    ["J", "Josette, de Carnolès", "vient d'écouter le banc n° 4 · il y a 3 min"],
+    ["M", "Marcel, 87 ans", "a reconnu sa grand-mère dans une anecdote · il y a 8 min"],
+    ["L", "Un touriste lyonnais", "s'est assis 2 fois de suite · il y a 12 min"],
+    ["★", "★★★★★ « Le banc parle mieux que mon beau-frère »", "Avis vérifié par personne"]
+  ];
+  var pi = 0;
+  function toast() {
+    if (off() || pi >= PROOF.length) return;
+    var p = PROOF[pi++];
+    var t = el('<div class="pp-toast" role="status"><span class="ic" aria-hidden="true">' + p[0] + '</span><span class="tx"><b>' + p[1] + '</b><small>' + p[2] + '</small></span><button class="pp-x" type="button" aria-label="Fermer">×</button></div>');
+    var gone = false;
+    function rm() { if (!gone) { gone = true; t.remove(); } }
+    t.querySelector(".pp-x").onclick = function () { rm(); pi = PROOF.length; };
+    document.body.appendChild(t);
+    later(rm, 6000);
+    later(toast, 18000);
+  }
+  later(toast, 9000);
+})();
+</script>
+
 </body>
 </html>
