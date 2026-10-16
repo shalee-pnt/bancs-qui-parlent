@@ -798,16 +798,22 @@ body.pp-has-cookie .pp-toast { bottom: calc(130px + env(safe-area-inset-bottom, 
     ["J", "Josette, de Carnolès", "vient d'écouter le banc n° 4 · il y a 3 min"],
     ["M", "Marcel, 87 ans", "a reconnu sa grand-mère dans une anecdote · il y a 8 min"],
     ["L", "Un touriste lyonnais", "s'est assis 2 fois de suite · il y a 12 min"],
-    ["★", "★★★★★ « Le banc parle mieux que mon beau-frère »", "Avis vérifié par personne"]
+    ["★", "★★★★★ « Le banc parle mieux que mon beau-frère »", "Avis vérifié par personne"],
+    ["C", "Camille, de Menton", "a traversé la frontière communale pour un banc · il y a 15 min"],
+    ["É", "La classe de CM2 de l'école du Cap", "a enregistré 3 nouvelles anecdotes · il y a 21 min"],
+    ["G", "Un goéland", "s'est posé sur le banc n° 1 sans appuyer sur le bouton · il y a 26 min"],
+    ["★", "★★★★☆ « J'ai appris un truc et j'ai même pas eu à télécharger d'appli »", "Avis d'un banc voisin"],
+    ["R", "René, 92 ans", "a demandé à rajouter sa version de l'histoire · il y a 34 min"]
   ];
-  var pi = 0;
+  var pi = 0, stopped = false;
   function toast() {
-    if (off() || pi >= PROOF.length) return;
-    var p = PROOF[pi++];
+    if (off() || stopped) return;
+    var p = PROOF[pi];
+    pi = (pi + 1) % PROOF.length;
     var t = el('<div class="pp-toast" role="status"><span class="ic" aria-hidden="true">' + p[0] + '</span><span class="tx"><b>' + p[1] + '</b><small>' + p[2] + '</small></span><button class="pp-x" type="button" aria-label="Fermer">×</button></div>');
     var gone = false;
     function rm() { if (!gone) { gone = true; t.remove(); } }
-    t.querySelector(".pp-x").onclick = function () { rm(); pi = PROOF.length; };
+    t.querySelector(".pp-x").onclick = function () { rm(); stopped = true; };
     document.body.appendChild(t);
     later(rm, 6000);
     later(toast, 11000);
