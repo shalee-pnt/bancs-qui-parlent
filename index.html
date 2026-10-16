@@ -1,0 +1,692 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+</head>
+<body>
+<title>Les bancs qui parlent</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Des bancs publics qui murmurent l'histoire de Roquebrune-Cap-Martin, d'une simple pression sur un bouton.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=Sofia+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap">
+<style>
+/* Layout: DA inspirée du site de la ville — fond blanc, titres Manrope ExtraBold en bleu, accents terracotta, panneaux bleus à titres sable, boutons pilule. */
+:root {
+  --stone: #FFFFFF;        /* fond */
+  --stone-2: #F4F1EC;      /* fond secondaire */
+  --ink: #222222;          /* texte, titre principal */
+  --ink-soft: #595959;
+  --heading: #004C97;      /* bleu des titres */
+  --sea: #004C97;          /* panneaux bleus */
+  --on-sea: #FFFFFF;
+  --on-sea-soft: #D3E0EE;
+  --sand: #F5E6C9;         /* sable, accent sur bleu */
+  --lemon: #B85736;        /* terracotta, accent principal */
+  --lemon-ink: #B85736;
+  --on-accent: #FFFFFF;
+  --olive: #B85736;        /* sur-titres */
+  --line: #E2DDD5;
+  --rule: #D37D60;         /* filet terracotta clair */
+  --font-display: "Manrope", "Arial", sans-serif;
+  --font-body: "Sofia Sans", "Arial", sans-serif;
+  --font-mono: "Manrope", "Arial", sans-serif;
+  --step--1: 0.875rem;
+  --step-0: 1.125rem;
+  --step-1: 1.35rem;
+  --step-2: 1.7rem;
+  --step-3: clamp(1.9rem, 4vw, 2.7rem);
+  --step-4: clamp(2.4rem, 6.5vw, 4.4rem);
+  --gutter-l: max(16px, env(safe-area-inset-left, 0px));
+  --gutter-r: max(16px, env(safe-area-inset-right, 0px));
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  background: var(--stone);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--step-0);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 { font-family: var(--font-display); font-weight: 800; line-height: 1.12; letter-spacing: -0.015em; color: var(--heading); text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--lemon); outline-offset: 3px; border-radius: 4px; }
+
+.wrap {
+  max-width: 1120px;
+  margin-inline: auto;
+  padding-left: var(--gutter-l);
+  padding-right: var(--gutter-r);
+}
+.band { padding-block: clamp(56px, 9vw, 112px); }
+.band + .band { border-top: 1px solid var(--line); }
+.eyebrow {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: var(--step--1);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--olive);
+}
+.lede { font-size: var(--step-1); line-height: 1.5; color: var(--ink-soft); max-width: 36ch; }
+.prose { max-width: 62ch; display: grid; gap: 1em; color: var(--ink-soft); }
+.prose strong { color: var(--ink); font-weight: 700; }
+.sec-head { display: grid; gap: 14px; margin-bottom: clamp(32px, 5vw, 56px); max-width: 760px; }
+.sec-head h2 { font-size: var(--step-3); }
+.sec-head h2::after { content: ""; display: block; width: 64px; height: 3px; margin-top: 18px; background: var(--rule); border-radius: 2px; }
+mark { background: linear-gradient(transparent 58%, color-mix(in srgb, var(--lemon) 55%, transparent) 58%); color: inherit; padding-inline: 2px; }
+
+/* ---------- Top bar ---------- */
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--stone); }
+.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+  background: color-mix(in srgb, var(--stone) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.top .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 12px; }
+.brand { font-family: var(--font-display); font-weight: 800; color: var(--heading); font-size: 1.1rem; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; }
+.brand-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--lemon); box-shadow: 0 0 0 4px color-mix(in srgb, var(--lemon) 25%, transparent); }
+.notice { background: var(--stone-2); color: var(--ink-soft); font-size: 0.85rem; text-align: center; padding-block: 8px; padding-left: var(--gutter-l); padding-right: var(--gutter-r); }
+.notice b { color: var(--lemon-ink); }
+.top nav { display: flex; gap: 22px; font-size: var(--step--1); }
+.top nav a { text-decoration: none; color: var(--ink-soft); }
+.top nav a:hover { color: var(--ink); }
+@media (max-width: 760px) { .top nav { display: none; } }
+
+/* ---------- Hero ---------- */
+.hero { padding-block: clamp(40px, 7vw, 88px) clamp(56px, 8vw, 96px); }
+.hero .wrap { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(32px, 5vw, 72px); align-items: center; }
+.hero-copy { display: grid; gap: 22px; min-width: 0; }
+.hero h1 { font-size: var(--step-4); color: var(--ink); }
+.hero h1 em { font-style: normal; color: var(--lemon-ink); }
+.hero-facts { display: flex; flex-wrap: wrap; gap: 10px 22px; font-family: var(--font-mono); font-size: var(--step--1); color: var(--ink-soft); padding-top: 6px; }
+.hero-facts b { color: var(--ink); font-weight: 500; }
+@media (max-width: 880px) { .hero .wrap { grid-template-columns: 1fr; } }
+
+/* ---------- Demo bench ---------- */
+.bench {
+  background: var(--sea);
+  color: var(--on-sea);
+  border-radius: 10px;
+  padding: clamp(20px, 3vw, 30px);
+  display: grid;
+  gap: 20px;
+  min-width: 0;
+  box-shadow: 0 30px 60px -30px rgba(10, 25, 40, 0.55);
+}
+.bench-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.bench-label { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--on-sea-soft); }
+.meter { font-family: var(--font-mono); font-size: 0.8rem; color: var(--on-sea-soft); font-variant-numeric: tabular-nums; }
+.meter b { color: var(--sand); font-weight: 500; }
+.places { display: flex; flex-wrap: wrap; gap: 8px; }
+.place {
+  font: 500 0.85rem var(--font-body);
+  background: transparent; color: var(--on-sea);
+  border: 1px solid color-mix(in srgb, var(--on-sea) 30%, transparent);
+  border-radius: 999px; padding: 6px 13px; cursor: pointer;
+}
+.place:hover { border-color: var(--on-sea); }
+.place[aria-pressed="true"] { background: var(--sand); color: #050505; border-color: var(--on-sea); }
+.bench-art { width: 100%; max-width: 100%; height: auto; display: block; }
+.bench-art .wood { fill: #C79A5B; }
+.bench-art .wood-dark { fill: #9C7440; }
+.bench-art .iron { fill: #0B1C2A; }
+.bench-art .box { fill: var(--lemon); }
+.bench-art .ground { stroke: color-mix(in srgb, var(--on-sea) 25%, transparent); stroke-width: 2; }
+.bench-art .wave { fill: none; stroke: var(--sand); stroke-width: 2.4; stroke-linecap: round; opacity: 0; }
+.bench.playing .bench-art .wave { animation: ripple 2.2s ease-out infinite; }
+.bench.playing .bench-art .btn-dot { fill: var(--sand); }
+.bench.playing .bench-art .wave.w2 { animation-delay: 0.7s; }
+.bench.playing .bench-art .wave.w3 { animation-delay: 1.4s; }
+@keyframes ripple { 0% { opacity: 0; transform: scale(0.6); } 25% { opacity: 0.9; } 100% { opacity: 0; transform: scale(1.25); } }
+.bench-art .waves { transform-box: fill-box; }
+.bench-art .wave { transform-origin: 236px 112px; }
+.whisper {
+  min-height: 7.5em;
+  font-family: var(--font-body);
+  font-size: 1.3rem;
+  line-height: 1.45;
+  color: var(--on-sea);
+}
+.whisper .idle { color: var(--on-sea-soft); font-family: var(--font-body); font-size: 1rem; font-style: italic; }
+.whisper .w { opacity: 0.18; transition: opacity 0.35s ease; }
+.whisper .w.on { opacity: 1; }
+.bench-actions { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; }
+.sit {
+  font: 700 1rem var(--font-body);
+  background: var(--sand); color: #050505;
+  border: 0; border-radius: 999px; padding: 12px 22px; cursor: pointer;
+  display: inline-flex; align-items: center; gap: 10px;
+}
+.sit:hover { filter: brightness(1.05); }
+.voice-toggle { display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; color: var(--on-sea-soft); cursor: pointer; }
+.voice-toggle input { accent-color: var(--sand); width: 16px; height: 16px; }
+@media (prefers-reduced-motion: reduce) {
+  .bench.playing .bench-art .wave { animation: none; opacity: 0.6; }
+  .whisper .w { transition: none; }
+}
+
+/* ---------- Patrimoine ---------- */
+.heritage { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 0; border-top: 1px solid var(--line); }
+.site { padding: 22px 22px 26px 0; border-bottom: 1px solid var(--line); display: grid; gap: 8px; align-content: start; min-width: 0; }
+.site-date { font-family: var(--font-mono); font-size: var(--step--1); color: var(--lemon-ink); font-variant-numeric: tabular-nums; }
+.site h3 { font-size: 1.45rem; }
+.site p { color: var(--ink-soft); font-size: 0.98rem; }
+.pull {
+  margin-top: clamp(36px, 5vw, 56px);
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--heading);
+  font-size: var(--step-2);
+  line-height: 1.25;
+  max-width: 30ch;
+}
+
+/* ---------- Fonctionnement ---------- */
+.steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px, 3vw, 40px); counter-reset: s; }
+.step { display: grid; gap: 10px; align-content: start; min-width: 0; }
+.step-n { font-family: var(--font-mono); font-size: var(--step--1); color: var(--olive); }
+.step h3 { font-size: 1.5rem; }
+.step p { color: var(--ink-soft); }
+.spec { font-family: var(--font-mono); font-size: 0.85rem; color: var(--ink); background: var(--stone-2); border-radius: 6px; padding: 3px 8px; justify-self: start; }
+@media (max-width: 760px) { .steps { grid-template-columns: 1fr; } }
+
+/* ---------- Emplacements ---------- */
+.spots { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.spot {
+  border: 1px solid var(--line); border-radius: 10px; padding: 20px;
+  display: grid; grid-template-rows: auto auto 1fr auto; gap: 8px; min-width: 0;
+  background: var(--stone);
+}
+.spot-tag { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--olive); }
+.spot h3 { font-size: 1.35rem; }
+.spot p { color: var(--ink-soft); font-size: 0.97rem; }
+.spot button {
+  justify-self: start; margin-top: 6px;
+  font: 500 0.88rem var(--font-body); color: var(--ink);
+  background: none; border: 0; padding: 0; cursor: pointer;
+  border-bottom: 2px solid var(--lemon);
+}
+.spot.later { border-style: dashed; background: transparent; }
+.spot.later h3 { color: var(--ink-soft); }
+
+/* ---------- Budget ---------- */
+.money { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(28px, 5vw, 64px); align-items: start; }
+.money > * { min-width: 0; }
+.ticket { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; }
+.ticket table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.ticket th, .ticket td { padding: 13px 18px; text-align: left; border-bottom: 1px solid var(--line); font-weight: 400; }
+.ticket td.num, .ticket th.num { text-align: right; font-family: var(--font-mono); white-space: nowrap; }
+.ticket thead th { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-soft); background: var(--stone-2); }
+.ticket tr.total td { font-weight: 700; border-bottom: 0; background: color-mix(in srgb, var(--lemon) 22%, var(--stone)); }
+.ticket tr.total td.num { font-weight: 500; }
+.scale { display: grid; gap: 18px; margin-top: 28px; }
+.scale-row { display: grid; gap: 6px; }
+.scale-row .lbl { display: flex; justify-content: space-between; gap: 12px; font-size: 0.92rem; color: var(--ink-soft); }
+.scale-row .lbl b { font-family: var(--font-mono); font-weight: 500; color: var(--ink); white-space: nowrap; }
+.bar { height: 12px; border-radius: 6px; background: var(--stone-2); overflow: hidden; }
+.bar span { display: block; height: 100%; background: var(--heading); border-radius: 6px; min-width: 3px; }
+.bar.hl span { background: var(--lemon); }
+.scale-note { font-size: 0.85rem; color: var(--ink-soft); }
+@media (max-width: 820px) { .money { grid-template-columns: 1fr; } }
+
+/* ---------- Mémoire / voix ---------- */
+.voices { background: var(--sea); color: var(--on-sea); }
+.voices .eyebrow { color: var(--sand); }
+.voices .sec-head h2 { color: var(--sand); }
+.voices .sec-head h2::after { background: var(--sand); }
+.voices .prose { color: var(--on-sea-soft); }
+.voices .prose strong { color: var(--on-sea); }
+.voice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 28px; margin-top: 44px; }
+.voice { border-top: 2px solid var(--sand); padding-top: 16px; display: grid; gap: 6px; }
+.voice h3 { font-size: 1.35rem; color: var(--on-sea); }
+.voice p { color: var(--on-sea-soft); font-size: 0.97rem; }
+
+/* ---------- Inspirations ---------- */
+.refs { display: grid; grid-template-columns: repeat(3, 1fr); gap: clamp(20px, 3vw, 36px); }
+.ref { display: grid; gap: 8px; align-content: start; min-width: 0; }
+.ref-city { font-family: var(--font-mono); font-size: var(--step--1); color: var(--olive); letter-spacing: 0.04em; }
+.ref h3 { font-size: 1.4rem; }
+.ref p { color: var(--ink-soft); }
+.ref.home h3 { color: var(--lemon-ink); }
+@media (max-width: 820px) { .refs { grid-template-columns: 1fr; } }
+
+/* ---------- FAQ ---------- */
+.faq { display: grid; border-top: 1px solid var(--line); max-width: 860px; }
+.faq details { border-bottom: 1px solid var(--line); }
+.faq summary {
+  list-style: none; cursor: pointer;
+  display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  padding: 20px 0; font-family: var(--font-display); font-weight: 700; color: var(--heading); font-size: 1.2rem; line-height: 1.3;
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-family: var(--font-mono); font-size: 1.3rem; color: var(--olive); flex-shrink: 0; transition: transform 0.2s ease; }
+.faq details[open] summary::after { transform: rotate(45deg); }
+.faq .answer { padding: 0 0 22px; color: var(--ink-soft); max-width: 64ch; }
+
+/* ---------- Appel ---------- */
+.cta .wrap { display: grid; gap: 26px; justify-items: start; }
+.cta h2 { font-size: var(--step-4); max-width: 14ch; }
+.cta h2 em { font-style: normal; color: var(--lemon-ink); }
+.plan { display: flex; flex-wrap: wrap; gap: 10px; }
+.plan span { font-family: var(--font-mono); font-weight: 700; font-size: 0.88rem; color: var(--on-accent); background: var(--lemon); border-radius: 999px; padding: 8px 16px; }
+.cta .prose { max-width: 58ch; }
+
+footer { border-top: 1px solid var(--line); }
+footer .wrap { padding-block: 28px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; font-size: 0.85rem; color: var(--ink-soft); }
+</style>
+
+<div class="notice"><b>Projet fictif</b> · exercice de prise de parole, sans lien avec la mairie de Roquebrune-Cap-Martin.</div>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="#top"><span class="brand-dot" aria-hidden="true"></span>Les bancs qui parlent</a>
+    <nav aria-label="Sections">
+      <a href="#patrimoine">Patrimoine</a>
+      <a href="#fonctionnement">Fonctionnement</a>
+      <a href="#emplacements">Emplacements</a>
+      <a href="#budget">Budget</a>
+      <a href="#questions">Questions</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <section class="hero">
+    <div class="wrap">
+      <div class="hero-copy">
+        <span class="eyebrow">Roquebrune-Cap-Martin · projet pilote</span>
+        <h1>Asseyez-vous. <em>Roquebrune</em> vous raconte.</h1>
+        <p class="lede">Des bancs publics équipés d'un bouton, comme ceux qu'on trouve à côté des tableaux dans les musées. On appuie, et le banc murmure une anecdote locale, juste pour la personne assise.</p>
+        <div class="hero-facts">
+          <span><b>5</b> bancs pilotes</span>
+          <span><b>480 €</b> le banc équipé</span>
+          <span><b>6</b> mois de test</span>
+          <span><b>≤ 60 dB</b></span>
+        </div>
+      </div>
+
+      <div class="bench" id="bench" aria-label="Démonstration d'un banc qui parle">
+        <div class="bench-head">
+          <span class="bench-label" id="bench-where">Banc n° 1 · Parc du Cap-Martin</span>
+          <span class="meter" aria-live="off"><b id="timer">2:00</b> · coupure auto</span>
+        </div>
+        <div class="places" role="group" aria-label="Choisir un banc">
+          <button class="place" type="button" data-i="0" aria-pressed="true">Cap-Martin</button>
+          <button class="place" type="button" data-i="1" aria-pressed="false">Vieux village</button>
+          <button class="place" type="button" data-i="2" aria-pressed="false">Le Corbusier</button>
+          <button class="place" type="button" data-i="3" aria-pressed="false">Olivier</button>
+          <button class="place" type="button" data-i="4" aria-pressed="false">Mont-Gros</button>
+        </div>
+        <svg class="bench-art" viewBox="0 0 480 170" role="img" aria-label="Un banc public avec sa borne audio">
+          <line class="ground" x1="10" y1="160" x2="470" y2="160"/>
+          <g class="waves" aria-hidden="true">
+            <path class="wave w1" d="M222 96 q14 16 0 32"/>
+            <path class="wave w2" d="M210 84 q26 28 0 56"/>
+            <path class="wave w3" d="M198 72 q38 40 0 80"/>
+          </g>
+          <rect class="iron" x="84" y="104" width="10" height="56" rx="2"/>
+          <rect class="iron" x="386" y="104" width="10" height="56" rx="2"/>
+          <rect class="iron" x="84" y="40" width="8" height="70" rx="2" transform="rotate(-8 88 75)"/>
+          <rect class="iron" x="388" y="40" width="8" height="70" rx="2" transform="rotate(8 392 75)"/>
+          <rect class="wood" x="70" y="40" width="340" height="14" rx="4"/>
+          <rect class="wood-dark" x="72" y="60" width="336" height="12" rx="4"/>
+          <rect class="wood" x="60" y="96" width="360" height="14" rx="4"/>
+          <rect class="wood-dark" x="64" y="110" width="352" height="8" rx="3"/>
+          <rect class="box" x="230" y="98" width="20" height="10" rx="2"/>
+          <circle cx="240" cy="103" r="2" class="iron"/>
+          <rect class="iron" x="30" y="112" width="8" height="48" rx="2"/>
+          <rect class="iron" x="20" y="98" width="28" height="18" rx="4"/>
+          <circle class="box btn-dot" cx="34" cy="107" r="6"/>
+        </svg>
+        <div class="whisper" id="whisper" aria-live="polite"><span class="idle">Le banc est silencieux. Appuyez sur le bouton pour l'écouter.</span></div>
+        <div class="bench-actions">
+          <button class="sit" id="sit" type="button"><span aria-hidden="true">●</span> <span id="sit-label">Appuyer sur le bouton</span></button>
+          <label class="voice-toggle" for="voice"><input type="checkbox" id="voice" checked> Voix de synthèse</label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="patrimoine">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Le constat</span>
+        <h2>Un musée à ciel ouvert, sans notice.</h2>
+        <div class="prose">
+          <p>Les trois quarts de la commune sont des espaces naturels. On y trouve un château du X<sup>e</sup> siècle, un cabanon classé à l'UNESCO, une villa moderniste et un fort enterré. Les habitants le savent. <strong>Personne ne le raconte</strong> à ceux qui passent.</p>
+        </div>
+      </div>
+      <div class="heritage">
+        <article class="site">
+          <span class="site-date">X<sup>e</sup> siècle</span>
+          <h3>Le château</h3>
+          <p>Un des plus anciens châteaux de France, perché au-dessus du vieux village et de ses ruelles voûtées.</p>
+        </article>
+        <article class="site">
+          <span class="site-date">1952 · UNESCO</span>
+          <h3>Le Cabanon de Le Corbusier</h3>
+          <p>Une cabane de bois de 3,66 m de côté face à la mer, inscrite au patrimoine mondial.</p>
+        </article>
+        <article class="site">
+          <span class="site-date">1929</span>
+          <h3>La Villa E-1027</h3>
+          <p>La maison blanche d'Eileen Gray, icône de l'architecture moderne, au bord du sentier littoral.</p>
+        </article>
+        <article class="site">
+          <span class="site-date">−25 m</span>
+          <h3>Le fort de Cap-Martin</h3>
+          <p>Un ouvrage de la ligne Maginot des Alpes, enterré sous la pinède.</p>
+        </article>
+        <article class="site">
+          <span class="site-date">+1 000 ans</span>
+          <h3>L'olivier millénaire</h3>
+          <p>Il a failli être abattu. Un ancien ministre l'a sauvé de justesse.</p>
+        </article>
+      </div>
+      <p class="pull">Un banc qui parle est un médiateur culturel gratuit, <mark>disponible 365 jours par an</mark>. Pas de guide, pas de réservation.</p>
+    </div>
+  </section>
+
+  <section class="band" id="fonctionnement">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Fonctionnement</span>
+        <h2>Un murmure, pas un haut-parleur.</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <span class="step-n">1 · on appuie</span>
+          <h3>Un bouton, comme au musée</h3>
+          <p>À côté du banc, un bouton lance le récit, comme ceux qui accompagnent les tableaux dans les musées. Rien à télécharger, rien à scanner.</p>
+          <span class="spec">bouton poussoir</span>
+        </div>
+        <div class="step">
+          <span class="step-n">2 · on écoute</span>
+          <h3>Une anecdote, à voix basse</h3>
+          <p>Le volume est limité pour n'être audible que depuis le banc. Les riverains n'entendent rien.</p>
+          <span class="spec">≤ 60 dB</span>
+        </div>
+        <div class="step">
+          <span class="step-n">3 · le silence revient</span>
+          <h3>Coupure automatique</h3>
+          <p>Chaque récit dure moins de deux minutes. Le banc se tait ensuite et redevient un banc ordinaire.</p>
+          <span class="spec">2 min max</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="emplacements">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Les 5 bancs pilotes</span>
+        <h2>Là où les gens marchent, s'assoient, vivent.</h2>
+        <div class="prose"><p>Le pôle culturel sera au centre-ville. Les bancs portent le patrimoine hors les murs, sur les chemins de tous les jours.</p></div>
+      </div>
+      <div class="spots" id="spots"></div>
+    </div>
+  </section>
+
+  <section class="band" id="budget">
+    <div class="wrap">
+      <div class="money">
+        <div>
+          <div class="sec-head">
+            <span class="eyebrow">Budget</span>
+            <h2>Le prix d'une statue pour équiper la ville.</h2>
+            <div class="prose"><p>Le test porte sur 5 bancs pendant 6 mois. Si l'essai convainc, on passe à 15 bancs. Sinon, la commune garde 5 bancs normaux et une belle collection de souvenirs enregistrés.</p></div>
+          </div>
+        </div>
+        <div>
+          <div class="ticket">
+            <table>
+              <thead><tr><th scope="col">Poste</th><th scope="col" class="num">Montant</th></tr></thead>
+              <tbody>
+                <tr><td>Banc public classique</td><td class="num">400 €</td></tr>
+                <tr><td>Borne audio encastrée</td><td class="num">80 €</td></tr>
+                <tr><td>Banc qui parle, l'unité</td><td class="num">480 €</td></tr>
+                <tr class="total"><td>Phase pilote · 5 bancs</td><td class="num">2 400 €</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="scale" aria-label="Comparaison des budgets">
+            <div class="scale-row">
+              <div class="lbl"><span>Phase pilote, 5 bancs</span><b>2 400 €</b></div>
+              <div class="bar hl"><span style="width:33.3%"></span></div>
+            </div>
+            <div class="scale-row">
+              <div class="lbl"><span>Déploiement, 15 bancs</span><b>7 200 €</b></div>
+              <div class="bar"><span style="width:100%"></span></div>
+            </div>
+            <p class="scale-note">Pour comparaison, le pôle culturel en construction (500 places) se chiffre en millions d'euros. Il ne tiendrait pas sur cette échelle. Remplacer une borne vandalisée coûte 80 €.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band voices" id="voix">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Mémoire partagée</span>
+        <h2>Un pont entre générations, posé au bord d'un sentier.</h2>
+        <div class="prose">
+          <p>Roquebrune change. Les nouveaux arrivants se sentent parfois de passage, et l'on se croise sans se parler. Un banc qui raconte l'histoire de la rue Montcollet ou la légende du Saint-Trou donne <strong>un sujet de conversation commun</strong>. Les anciens y reconnaissent leur mémoire, les nouveaux comprennent où ils ont atterri.</p>
+        </div>
+      </div>
+      <div class="voice-grid">
+        <div class="voice">
+          <h3>Les anciens Roquebrunois</h3>
+          <p>Un appel à témoignages recueille souvenirs, légendes et histoires de rues.</p>
+        </div>
+        <div class="voice">
+          <h3>Les écoles</h3>
+          <p>Les élèves enquêtent, écrivent et enregistrent leurs propres récits.</p>
+        </div>
+        <div class="voice">
+          <h3>Les associations</h3>
+          <p>Elles apportent archives, photos et voix connues du quartier.</p>
+        </div>
+        <div class="voice">
+          <h3>Une commission patrimoine</h3>
+          <p>Elle valide chaque anecdote avant sa diffusion.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="inspirations">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Ça existe déjà</span>
+        <h2>On a déjà l'ADN. Il manque juste le banc.</h2>
+      </div>
+      <div class="refs">
+        <article class="ref">
+          <span class="ref-city">Montréal</span>
+          <h3>Des bancs qui racontent le quartier</h3>
+          <p>40 000 écoutes dès la première année.</p>
+        </article>
+        <article class="ref">
+          <span class="ref-city">Barcelone</span>
+          <h3>Sur les Ramblas</h3>
+          <p>Touristes et habitants redécouvrent la ville en s'asseyant.</p>
+        </article>
+        <article class="ref home">
+          <span class="ref-city">Roquebrune · Mont-Gros</span>
+          <h3>Les médaillons de mémoire</h3>
+          <p>Le parcours « chasse au trésor » rend déjà le patrimoine accessible par le jeu. Les bancs ajoutent l'écoute.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="band" id="questions">
+    <div class="wrap">
+      <div class="sec-head">
+        <span class="eyebrow">Questions fréquentes</span>
+        <h2>Ce qu'on nous demande.</h2>
+      </div>
+      <div class="faq">
+        <details>
+          <summary>Et le bruit pour les riverains ?</summary>
+          <div class="answer">Le volume est limité à 60 dB et n'est audible que depuis le banc. La coupure est automatique après 2 minutes. Le son ne porte pas au-delà du banc.</div>
+        </details>
+        <details>
+          <summary>Qui enregistre les anecdotes ?</summary>
+          <div class="answer">Les habitants eux-mêmes, après un appel à témoignages : anciens Roquebrunois, écoles, associations. Une commission patrimoine valide chaque récit.</div>
+        </details>
+        <details>
+          <summary>Pourquoi pas une application mobile ?</summary>
+          <div class="answer">Une application exclut les personnes âgées et les touristes sans forfait. Le banc est accessible à tous, tout de suite, sans téléchargement.</div>
+        </details>
+        <details>
+          <summary>Et le vandalisme ?</summary>
+          <div class="answer">Le bouton et la borne sont encastrés dans le banc et coûtent 80 € à remplacer. Et on parie qu'un banc qui raconte l'histoire de l'olivier millénaire sera plutôt protégé par ses voisins.</div>
+        </details>
+        <details>
+          <summary>On a déjà le pôle culturel en 2026.</summary>
+          <div class="answer">Le pôle culturel sera au centre-ville. Les bancs installent le patrimoine hors les murs, là où les gens se promènent. Les deux projets se complètent.</div>
+        </details>
+        <details>
+          <summary>Quel retour sur investissement ?</summary>
+          <div class="answer">Image de la commune, lien social, tourisme, mémoire : c'est difficile à chiffrer. Mais un banc qui parle se filme, se partage et se raconte. C'est de la communication qui ne coûte rien de plus.</div>
+        </details>
+        <details>
+          <summary>Et si personne ne s'assied ?</summary>
+          <div class="answer">C'est tout l'enjeu du test : le banc doit devenir une destination. Pendant 6 mois, on compte les écoutes. On mesure, puis on décide.</div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="band cta" id="appel">
+    <div class="wrap">
+      <span class="eyebrow">La proposition</span>
+      <h2>Qui est prêt à donner <em>une voix</em> à nos bancs ?</h2>
+      <div class="plan">
+        <span>5 bancs</span><span>2 400 €</span><span>6 mois</span><span>des voix d'habitants</span>
+      </div>
+      <div class="prose"><p>Roquebrune a des siècles d'histoires à raconter, et aucun support audio accessible à tous. On écoute, on mesure, on décide. Si ça marche, on étend à 15 bancs.</p></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Les bancs qui parlent · Roquebrune-Cap-Martin</span>
+    <span>Projet fictif réalisé dans le cadre d'un exercice de prise de parole.</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  var BENCHES = [
+    { where: "Parc du Cap-Martin", title: "Churchill face à la mer", tag: "Banc n° 1",
+      text: "Dans les années cinquante, un vieil homme installait ici son chevalet. Cigare aux lèvres, il peignait la baie, les pins, la lumière sur l'eau. C'était Winston Churchill. Il venait se reposer au Cap-Martin, loin de Londres." },
+    { where: "Vieux village", title: "Le château qui guettait la mer", tag: "Banc n° 2",
+      text: "Au-dessus de vous, le donjon veille depuis plus de mille ans. On l'a bâti au dixième siècle pour surveiller la côte et protéger le village des raids venus de la mer. Les ruelles voûtées en dessous n'ont presque pas changé depuis." },
+    { where: "Promenade Le Corbusier", title: "Un cabanon pour Yvonne", tag: "Banc n° 3",
+      text: "En 1952, Le Corbusier dessine ici une petite cabane de bois, trois mètres soixante-six de côté. C'est un cadeau pour sa femme, Yvonne. L'architecte des grandes villes choisit, pour lui-même, quelques mètres carrés face à la mer." },
+    { where: "L'olivier millénaire", title: "L'arbre qu'on a failli abattre", tag: "Banc n° 4",
+      text: "Cet olivier a plus de mille ans. Il a vu passer les seigneurs, les paysans, les touristes. Un jour, on a voulu l'abattre. Un ancien ministre s'y est opposé, et l'arbre est resté. Il est toujours là, devant vous." },
+    { where: "Mont-Gros", title: "Sur la piste des médaillons", tag: "Banc n° 5",
+      text: "Sur ce sentier, des médaillons de mémoire jalonnent déjà la colline. Petits et grands les cherchent comme un trésor. Ce banc vous propose une pause : regardez la mer, et écoutez ce que la montagne a à dire." }
+  ];
+
+  var bench = document.getElementById("bench");
+  var whisper = document.getElementById("whisper");
+  var where = document.getElementById("bench-where");
+  var timerEl = document.getElementById("timer");
+  var sitBtn = document.getElementById("sit");
+  var sitLabel = document.getElementById("sit-label");
+  var voiceBox = document.getElementById("voice");
+  var placeBtns = document.querySelectorAll(".place");
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  var current = 0, playing = false, wordTimer = null, clock = null, secondsLeft = 120;
+  var synth = ("speechSynthesis" in window) ? window.speechSynthesis : null;
+  if (!synth) { voiceBox.checked = false; voiceBox.disabled = true; voiceBox.parentNode.title = "Synthèse vocale indisponible dans ce navigateur"; }
+
+  function fmt(s) { return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
+
+  function stop(keepText) {
+    playing = false;
+    bench.classList.remove("playing");
+    sitLabel.textContent = "Appuyer sur le bouton";
+    clearInterval(wordTimer); clearInterval(clock);
+    secondsLeft = 120; timerEl.textContent = fmt(secondsLeft);
+    try { if (synth) synth.cancel(); } catch (e) {}
+    if (!keepText) whisper.innerHTML = '<span class="idle">Le banc est silencieux. Appuyez sur le bouton pour l\'écouter.</span>';
+  }
+
+  function play() {
+    var b = BENCHES[current];
+    playing = true;
+    bench.classList.add("playing");
+    sitLabel.textContent = "Arrêter";
+    var words = b.text.split(" ");
+    whisper.innerHTML = words.map(function (w) { return '<span class="w">' + w + '</span>'; }).join(" ");
+    var spans = whisper.querySelectorAll(".w");
+    var i = 0;
+    if (reduced) { spans.forEach(function (s) { s.classList.add("on"); }); }
+    else {
+      wordTimer = setInterval(function () {
+        if (i < spans.length) { spans[i].classList.add("on"); i++; }
+        else { clearInterval(wordTimer); setTimeout(function () { if (playing) stop(true); }, 1600); }
+      }, 330);
+    }
+    clock = setInterval(function () {
+      secondsLeft = Math.max(0, secondsLeft - 1);
+      timerEl.textContent = fmt(secondsLeft);
+      if (secondsLeft === 0) stop(true);
+    }, 1000);
+    if (synth && voiceBox.checked) {
+      try {
+        var u = new SpeechSynthesisUtterance(b.text);
+        u.lang = "fr-FR"; u.rate = 0.92; u.pitch = 0.95; u.volume = 0.55;
+        var fr = synth.getVoices().filter(function (v) { return /^fr/i.test(v.lang); })[0];
+        if (fr) u.voice = fr;
+        synth.cancel(); synth.speak(u);
+      } catch (e) {}
+    }
+  }
+
+  function select(i) {
+    stop(false);
+    current = i;
+    placeBtns.forEach(function (btn) { btn.setAttribute("aria-pressed", String(+btn.dataset.i === i)); });
+    where.textContent = BENCHES[i].tag + " · " + BENCHES[i].where;
+  }
+
+  sitBtn.addEventListener("click", function () { playing ? stop(true) : play(); });
+  placeBtns.forEach(function (btn) { btn.addEventListener("click", function () { select(+btn.dataset.i); }); });
+  voiceBox.addEventListener("change", function () { if (!voiceBox.checked) { try { synth && synth.cancel(); } catch (e) {} } });
+
+  var spots = document.getElementById("spots");
+  spots.innerHTML = BENCHES.map(function (b, i) {
+    return '<article class="spot"><span class="spot-tag">' + b.tag + '</span><h3>' + b.where + '</h3>' +
+      '<p>« ' + b.title + ' »</p><button type="button" data-i="' + i + '">Écouter ce banc ↑</button></article>';
+  }).join("") +
+    '<article class="spot later"><span class="spot-tag">Phase 2</span><h3>Plage du Buse, rue Montcollet…</h3>' +
+    '<p>Dix bancs supplémentaires si le test est concluant.</p><span></span></article>';
+  spots.addEventListener("click", function (e) {
+    var t = e.target.closest("button[data-i]");
+    if (!t) return;
+    select(+t.dataset.i);
+    bench.scrollIntoView({ behavior: reduced ? "auto" : "smooth", block: "center" });
+    setTimeout(play, reduced ? 0 : 450);
+  });
+})();
+</script>
+
+</body>
+</html>
